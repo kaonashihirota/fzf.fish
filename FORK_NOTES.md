@@ -1,4 +1,4 @@
-# Fork notes
+# Fork notes — local changes vs. upstream
 
 Local fork of [PatrickF1/fzf.fish](https://github.com/PatrickF1/fzf.fish) for
 `kaonashihirota`. Two small, independent, upstream-able commits on top of
