@@ -17,6 +17,10 @@ function _fzf_preview_file --description "Print a preview for the given file bas
         if set --query fzf_preview_file_cmd
             # need to escape quotes to make sure eval receives file_path as a single arg
             eval "$fzf_preview_file_cmd '$file_path'"
+        else if command --query fzf-preview.sh
+            # fzf ships fzf-preview.sh, which previews images with the Kitty or Sixel graphics
+            # protocol (when the terminal supports it) and falls back to bat for text
+            fzf-preview.sh "$file_path"
         else
             bat --style=numbers --color=always "$file_path"
         end

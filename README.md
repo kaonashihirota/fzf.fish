@@ -138,7 +138,7 @@ Find more ideas and tips in the [Cookbook](https://github.com/PatrickF1/fzf.fish
 
 ### Change how Search Directory previews directories and regular files
 
-[Search Directory][], by default, executes `ls` to preview directories and `bat` to preview [regular files](https://stackoverflow.com/questions/6858452).
+[Search Directory][], by default, executes `ls` to preview directories and `fzf-preview.sh` to preview [regular files](https://stackoverflow.com/questions/6858452). `fzf-preview.sh` ships with `fzf`, renders images with the Kitty or Sixel graphics protocol when the terminal supports it (see fzf's preview image support), and falls back to `bat` for text and to `file` for binaries. If `fzf-preview.sh` is not on your `PATH`, `bat` is used directly.
 
 To use your own directory preview command, set it in `fzf_preview_dir_cmd`:
 
