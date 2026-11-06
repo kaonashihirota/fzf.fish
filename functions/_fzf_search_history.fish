@@ -10,13 +10,28 @@ function _fzf_search_history --description "Search command history. Replace the 
         set -f fzf_history_time_format "%m-%d %H:%M:%S"
     end
 
-    # Delinate time from command in history entries using the vertical box drawing char (U+2502).
-    # Then, to get raw command from history entries, delete everything up to it. The ? on regex is
-    # necessary to make regex non-greedy so it won't match into commands containing the char.
-    set -f time_prefix_regex '^.*? │ '
+    if not set --query fzf_history_separator
+        # Delineates the time from the command in each history entry. It may be longer than one
+        # character and it may contain ANSI escape codes to color it, which fzf will only render
+        # if --ansi is in fzf_history_opts.
+        set -f fzf_history_separator " │ "
+    end
+
+    # Delinate time from command in history entries using the separator. Then, to get raw command
+    # from history entries, delete everything up to it. The ? on regex is necessary to make regex
+    # non-greedy so it won't match into commands containing the separator. Escape codes are left
+    # out of the match because fzf doesn't include them in its output, but they are eaten if it did.
+    set -f separator_escape_regex '\x1b\[[0-9;]*[A-Za-z]'
+    set -f plain_separator (string replace --regex --all $separator_escape_regex '' -- $fzf_history_separator)
+    if test -z "$plain_separator"
+        # there is no visible char to anchor the regex on, so ignore the custom separator
+        set -f fzf_history_separator " │ "
+        set -f plain_separator " │ "
+    end
+    set -f time_prefix_regex '^.*?'(string escape --style=regex -- $plain_separator)'(?:'$separator_escape_regex')*'
     # Delinate commands throughout pipeline using null rather than newlines because commands can be multi-line
     set -f commands_selected (
-        builtin history --null --show-time="$fzf_history_time_format │ " |
+        builtin history --null --show-time="$fzf_history_time_format$fzf_history_separator" |
         _fzf_wrapper --read0 \
             --print0 \
             --multi \

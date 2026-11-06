@@ -193,7 +193,25 @@ set fzf_diff_highlighter diff-so-fancy
 set fzf_history_time_format %d-%m-%y
 ```
 
-Do not to include the vertical box-drawing character `│` (not to be confused with the pipe character `|`) as it is relied on to delineate the date time from the command.
+Do not include the separator that delineates the date time from the command (by default the vertical box-drawing character `│`, not to be confused with the pipe character `|`). To change or style it, see below.
+
+### Change Search History's separator
+
+[Search History][] puts a separator between the date time and the command. To use a different one, set it in `fzf_history_separator`:
+
+```fish
+set fzf_history_separator " · "
+```
+
+The separator may contain ANSI escape codes, which lets you style it, but fzf only renders them if you pass `--ansi`:
+
+```fish
+# fish doesn't expand escape sequences in quotes, hence string unescape
+set fzf_history_separator (string unescape '\e[2m │ \e[0m')
+set fzf_history_opts --ansi
+```
+
+The separator must contain at least one visible character, or else the default is used.
 
 ## Further reading
 
